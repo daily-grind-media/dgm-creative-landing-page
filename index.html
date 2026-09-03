@@ -335,13 +335,19 @@ p strong{color:var(--white);font-weight:500;}
 .form-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;text-align:left;}
 .form-fields .ff{border:1px solid var(--border);background:rgba(0,0,0,0.25);padding:12px 14px;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.12em;text-transform:uppercase;font-size:0.62rem;color:var(--muted);}
 .form-fields .ff.full{grid-column:1/-1;}
-/* live GHL form embed wrapper */
-.ghl-embed{border:1px solid var(--border);background:rgba(0,0,0,0.25);overflow:hidden;}
-.ghl-embed iframe{display:block;width:100%;min-height:720px;height:100%;}
-@media(max-width:640px){.ghl-embed iframe{min-height:860px;}}
-/* calendar is shorter than the project form */
-.ghl-embed--cal iframe{min-height:640px;}
-@media(max-width:640px){.ghl-embed--cal iframe{min-height:700px;}}
+/* live GHL embed wrappers (calendar + project form) */
+.ghl-embed{width:100%;border:1px solid var(--border);background:rgba(0,0,0,0.25);overflow:hidden;}
+.ghl-embed iframe{display:block;width:100%;border:0;overflow:hidden;}
+/* Creative project form */
+#project .ghl-embed iframe{min-height:760px;}
+/* Creative discovery calendar */
+#book .ghl-embed iframe{min-height:760px;}
+@media(max-width:640px){
+  #project .ghl-embed iframe{min-height:950px;}
+  #book .ghl-embed iframe{min-height:840px;}
+  /* safety margin so the mobile sticky CTA can never overlap the conversion widgets */
+  #project{padding-bottom:calc(clamp(64px,9vw,130px) + 84px);}
+}
 
 /* ---------- footer ---------- */
 footer{padding:clamp(54px,7vw,88px) 0 clamp(40px,5vw,60px);text-align:center;position:relative;border-top:1px solid var(--border);}
@@ -729,12 +735,11 @@ footer .lockup{justify-content:center;}
       <div class="ghl-embed ghl-embed--cal">
         <iframe
           src="https://api.leadconnectorhq.com/widget/booking/2NFmK7RfHoFqhiGmeZxc"
-          title="Book a Creative Discovery Call"
           allow="payment"
-          loading="lazy"
+          style="width:100%;border:none;overflow:hidden;"
           scrolling="no"
-          id="2NFmK7RfHoFqhiGmeZxc_1788411947405"
-          style="width:100%;border:none;overflow:hidden;">
+          id="2NFmK7RfHoFqhiGmeZxc_1788412425018"
+          title="Book a Creative Discovery Call">
         </iframe>
       </div>
     </div>
@@ -752,11 +757,9 @@ footer .lockup{justify-content:center;}
       <div class="ghl-embed">
         <iframe
           src="https://api.leadconnectorhq.com/widget/form/ALBHJ9lkql6kLLjBqCPj"
-          title="Tell us about your project"
-          loading="lazy"
-          scrolling="no"
+          style="width:100%;border:none;overflow:hidden;"
           id="inline-ALBHJ9lkql6kLLjBqCPj"
-          style="width:100%;height:100%;border:none;border-radius:0;">
+          title="Tell us about your project">
         </iframe>
       </div>
     </div>
@@ -802,20 +805,25 @@ footer .lockup{justify-content:center;}
   // mobile menu — jump to book
   var t=document.getElementById('navToggle');
   if(t){t.addEventListener('click',function(){document.getElementById('book').scrollIntoView({behavior:'smooth'});});}
-  // mobile sticky CTA: appear after hero, disappear once the booking modules are in view
+  // mobile sticky CTA: appear after hero, disappear once either conversion module is in view
   var sticky=document.getElementById('stickyCta');
   var hero=document.getElementById('top');
   var book=document.getElementById('book');
+  var project=document.getElementById('project');
   if(sticky&&('IntersectionObserver' in window)){
-    var pastHero=false, atBook=false;
-    function sync(){ if(pastHero&&!atBook){sticky.classList.add('show');}else{sticky.classList.remove('show');} }
+    var pastHero=false, atBook=false, atForm=false;
+    function sync(){ if(pastHero&&!atBook&&!atForm){sticky.classList.add('show');}else{sticky.classList.remove('show');} }
     new IntersectionObserver(function(e){pastHero=!e[0].isIntersecting;sync();},{threshold:0.15}).observe(hero);
     if(book){new IntersectionObserver(function(e){atBook=e[0].isIntersecting;sync();},{threshold:0.02,rootMargin:'0px 0px -10% 0px'}).observe(book);}
+    if(project){new IntersectionObserver(function(e){atForm=e[0].isIntersecting;sync();},{threshold:0.02,rootMargin:'0px 0px -10% 0px'}).observe(project);}
   }
 })();
 </script>
 
-<!-- GoHighLevel form embed script — enables iframe auto-resize; remove with the form above -->
-<script src="https://link.msgsndr.com/js/form_embed.js"></script>
+<!-- GoHighLevel embed script — loaded ONCE globally; drives both the calendar (#book) and form (#project) auto-resize -->
+<script
+  src="https://link.msgsndr.com/js/form_embed.js"
+  type="text/javascript">
+</script>
 </body>
 </html>
