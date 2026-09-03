@@ -341,16 +341,19 @@ p strong{color:var(--white);font-weight:500;}
 .conversion-head h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,6vw,4.6rem);line-height:0.95;text-transform:uppercase;color:var(--white);margin-bottom:18px;}
 .conversion-head p{color:#a9a6a0;font-size:clamp(0.95rem,1.7vw,1.08rem);max-width:58ch;margin:0 auto;}
 /* live GHL embed wrappers (calendar + project form) — transparent, no frame */
-.ghl-embed{width:100%;background:transparent;border:none;overflow:hidden;}
-.ghl-embed iframe{display:block;width:100%;border:none;overflow:hidden;}
+.ghl-embed{width:100%;background:transparent;border:none;}
+.ghl-embed iframe{display:block;width:100%;border:none;}
 /* Creative project form */
 #project .ghl-embed{min-height:760px;}
 #project .ghl-embed iframe{min-height:760px;height:760px;}
 /* Creative discovery calendar */
+#book .ghl-embed{overflow:hidden;}
 #book .ghl-embed iframe{min-height:760px;}
 @media(max-width:640px){
-  #project .ghl-embed{min-height:1000px;}
-  #project .ghl-embed iframe{min-height:1000px;height:1000px;}
+  /* mobile: a stacked form is much taller — give it room and don't clip it.
+     iOS Safari collapses iframes without explicit height, so set a generous fixed height. */
+  #project .ghl-embed{min-height:1400px;}
+  #project .ghl-embed iframe{min-height:1400px;height:1400px;}
   #book .ghl-embed iframe{min-height:840px;}
   /* safety margin so the mobile sticky CTA can never overlap the conversion widgets */
   #project{padding-bottom:calc(clamp(64px,9vw,130px) + 84px);}
@@ -825,9 +828,10 @@ footer .lockup{justify-content:center;}
     <div class="ghl-embed">
       <iframe
         src="https://api.leadconnectorhq.com/widget/form/ALBHJ9lkql6kLLjBqCPj"
-        style="width:100%;height:1000px;min-height:760px;border:none;"
+        style="width:100%;min-height:760px;border:none;"
         id="inline-ALBHJ9lkql6kLLjBqCPj"
-        title="Tell us about your project">
+        title="Tell us about your project"
+        scrolling="yes">
       </iframe>
     </div>
   </div>
